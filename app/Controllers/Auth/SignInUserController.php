@@ -27,21 +27,20 @@ class SignInUserController extends BaseController
      */
     public function store()
     {
-        session_start();
         $validated = SignInRequest::validated($_POST);
 
         if (!$validated['email']) {
             FormData::setOldData($_POST);
             Flash::createMessage(SIGN_IN_ERROR, 'Enter the correct email or password', FLASH_ERROR);
 
-            header('Location: /login');
+            header('Location: /sign-in');
             exit;
         }
 
-        $user = User::findById(1);
+        $user = User::find($validated['email']);
 
         if ($user->authenticate($_POST['password'])) {
-            header('Location: /dashboard');
+            header('Location: /dashboard/posts');
             exit;
         }
     }

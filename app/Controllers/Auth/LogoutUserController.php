@@ -11,8 +11,6 @@ class LogoutUserController extends BaseController
      */
     public function index()
     {
-        session_start();
-
         $_SESSION[AUTHENTICATED_USER] = false;
 
         header('Location: /sign-in');

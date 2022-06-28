@@ -1,4 +1,3 @@
-<?php session_start(); ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,11 +8,13 @@
 <body>
 
 <div class="container">
-    <header class="d-flex justify-content-center py-3">
+    <header class="d-flex justify-content-between py-3">
         <ul class="nav nav-pills">
             <li class="nav-item"><a href="<?php echo URL_ROOT ?>" class="nav-link <?php echo $_REQUEST['route'] == '' ? 'active' : ''?>" aria-current="page">Home</a></li>
             <li class="nav-item"><a href="<?php echo URL_ROOT . '/posts' ?>" class="nav-link <?php echo $_REQUEST['route'] == 'posts' ? 'active' : ''?>">Posts</a></li>
-            <li class="nav-item"><a href="<?php echo URL_ROOT . '/authors' ?>" class="nav-link <?php echo $_REQUEST['route'] == 'authors' ? 'active' : ''?>">Authors</a></li>
+            <li class="nav-item"><a href="<?php echo URL_ROOT . '/dashboard/posts' ?>" class="nav-link <?php echo $_REQUEST['route'] == 'dashboard/posts' ? 'active' : ''?>">Dashboard</a></li>
+            <li class="nav-item"><a href="<?php echo URL_ROOT . '/dashboard/posts/create' ?>" class="nav-link <?php echo $_REQUEST['route'] == 'dashboard/posts/create' ? 'active' : ''?>">Create</a></li>
+
         </ul>
 
         <div class="col-md-3 text-end">

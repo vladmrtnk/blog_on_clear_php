@@ -34,15 +34,22 @@ class User
     }
 
     /**
-     * @param  int  $needle
+     * Find user by ID or Email
      *
-     * @return \App\Models\User
+     * @param  int|string  $needle
+     *
+     * @return User
      */
-    public static function findById(int $needle)
+    public static function find($needle)
     {
         $db = DB::getConection();
 
-        $result = $db->query("SELECT * from users where id = $needle");
+        if (is_int($needle)) {
+            $result = $db->query("SELECT * from users where id = $needle");
+        } else {
+            $result = $db->query("SELECT * from users where email = '$needle'");
+        }
+
         $data = $result->fetch(PDO::FETCH_ASSOC);
 
         $user = new User();

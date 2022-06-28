@@ -27,7 +27,6 @@ class SignUpUserController extends BaseController
      */
     public function store()
     {
-        session_start();
         $validated = SignUpRequest::validated($_POST);
 
         if (array_search(false, $validated)) {
@@ -49,7 +48,8 @@ class SignUpUserController extends BaseController
 
         $user = new User($validated);
         if ($user->save()) {
-            header('Location: /sign-in');
+            $_SESSION[AUTHENTICATED_USER] = $user->id;
+            header('Location: /dashboard');
         }
     }
 }
