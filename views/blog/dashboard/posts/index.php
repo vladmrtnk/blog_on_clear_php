@@ -2,7 +2,13 @@
 
 <main class="container">
     <div class="row mb-2">
-        <h3>My posts:</h3>
+        <div class="mb-3 d-flex justify-content-between">
+            <h3>My posts:</h3>
+            <div>
+                <a href="<?php echo URL_ROOT . '/dashboard/posts/create' ?>" class="btn btn-primary">Create post</a>
+                <a href="<?php echo URL_ROOT . '/dashboard/tags/create' ?>" class="btn btn-primary">Create tag</a>
+            </div>
+        </div>
         <?php if(!empty($posts)): ?>
         <?php /** @var array $posts */ ?>
         <?php foreach ($posts as $post): ?>
@@ -22,18 +28,23 @@
                     <div class="mb-1 text-muted"><?php echo date_create($post['created_at'])->format('M d - G:i'); ?></div>
                     <p class="card-text mb-auto"><?php echo mb_substr($post['content'], 0, 140) . ' ...'; ?></p>
                     <div class="d-flex justify-content-between">
-                        <a href="<?php echo URL_ROOT . '/posts/' . $post['id'] ?>" class="stretched-link">Continue reading</a>
+                        <a href="<?php echo URL_ROOT . '/posts/' . $post['id'] ?>" class="">Continue reading</a>
                         <div>
-                            <a href="#" class="btn btn-primary btn-sm">Edit</a>
-                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                            <a href="<?php echo URL_ROOT . '/dashboard/posts/' . $post['id'] . '/destroy' ?>" class="btn btn-danger btn-sm">Delete</a>
                         </div>
+
                     </div>
                 </div>
                 <div class="col-auto d-none d-lg-block">
                     <?php if (is_null($post['image_path'])): ?>
-                    <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Image</text></svg>
+                        <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
+                             role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice"
+                             focusable="false"><title>Placeholder</title>
+                            <rect width="100%" height="100%" fill="#55595c"></rect>
+                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">Image</text>
+                        </svg>
                     <?php else: ?>
-                    <img src="<?php echo $post['image_path'] ?>" alt="image" width="200" height="250">
+                        <img src="<?php echo $post['image_path'] ?>" alt="image" width="200" height="250">
                     <?php endif; ?>
                 </div>
             </div>

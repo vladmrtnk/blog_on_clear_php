@@ -2,6 +2,7 @@
 
 namespace App\Requests\Auth;
 
+use App\Models\User;
 use App\Requests\Request;
 
 class SignUpRequest extends Request
@@ -29,8 +30,15 @@ class SignUpRequest extends Request
             ],
         ]);
 
-        if ($data['password'] != $data['second_password'])
+        if ($data['password'] != $data['second_password']) {
             $result['password'] = false;
+        }
+
+        if ($result['email']) {
+            if (User::exist($result['email'])) {
+                $result['email'] = false;
+            }
+        }
 
         return $result;
     }

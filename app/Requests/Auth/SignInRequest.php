@@ -2,6 +2,7 @@
 
 namespace App\Requests\Auth;
 
+use App\Models\User;
 use App\Requests\Request;
 
 class SignInRequest extends Request
@@ -16,6 +17,12 @@ class SignInRequest extends Request
         $result = filter_var_array($data, [
             'email' => FILTER_VALIDATE_EMAIL,
         ]);
+
+        if ($result['email']) {
+            if (!User::exist($result['email'])) {
+                $result['email'] = false;
+            }
+        }
 
         return $result;
     }

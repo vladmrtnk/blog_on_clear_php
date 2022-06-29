@@ -19,37 +19,27 @@ class Router
     public function __invoke(RouteCollection $routes): void
     {
         session_start();
-        $context = new RequestContext();
-        $context->fromRequest(Request::createFromGlobals());
+        $request = Request::createFromGlobals();
+        $context = (new RequestContext())->fromRequest($request);
 
         $matcher = new UrlMatcher($routes, $context);
         try {
-            $matcher = $matcher->match($_SERVER['REQUEST_URI']);
-
-            // Cast params to int if numeric
-            array_walk($matcher, function (&$param) {
-                if (is_numeric($param)) {
-                    $param = (int) $param;
-                }
-            });
-            $route = explode('-', $matcher['_route']);
-            if (!isset($_SESSION[AUTHENTICATED_USER]) || !$_SESSION[AUTHENTICATED_USER]){
+            $parameters = $matcher->match($request->getPathInfo());
+            /* Check if authorised */
+            $route = explode('-', array_pop($parameters));
+            if (!isset($_SESSION[AUTHENTICATED_USER]) || !$_SESSION[AUTHENTICATED_USER]) {
                 if ($route[0] == 'dashboard') {
                     header('Location: /sign-in');
                     exit;
                 }
-            }
-            else {
+            } else {
                 if ($route[0] == 'sign') {
                     header('Location: /');
                     exit;
                 }
             }
 
-            // Add routes as paramaters to the next class
-//            $params = array_merge(array_slice($matcher, 2, -1), ['routes' => $routes]);
-
-            call_user_func([$matcher[0], $matcher[1]]);
+            call_user_func([$parameters[0], $parameters[1]], end($parameters));
 
         } catch (MethodNotAllowedException $e) {
             echo 'Route method is not allowed.';

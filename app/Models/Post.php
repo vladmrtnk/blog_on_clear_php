@@ -9,12 +9,14 @@ use PDO;
 class Post
 {
     public $id;
+    public $user_id;
     public $title;
     public $content;
     public $image_path;
     public $created_at;
     public $updated_at;
     public $tags;
+    public $author;
 
     /**
      * @param  string|array|null  $title
@@ -42,6 +44,34 @@ class Post
     }
 
     /**
+     * Find post by ID
+     *
+     * @param  int  $needle
+     *
+     * @return \App\Models\Post
+     */
+    public static function find($needle)
+    {
+        $db = DB::getConection();
+
+        $result = $db->query("SELECT * from posts where id = $needle");
+        $data = $result->fetch(PDO::FETCH_ASSOC);
+
+        $post = new Post();
+        $post->id = $data['id'];
+        $post->user_id = $data['user_id'];
+        $post->title = $data['title'];
+        $post->content = $data['content'];
+        $post->image_path = $data['image_path'];
+        $post->created_at = $data['created_at'];
+        $post->updated_at = $data['updated_at'];
+        $post->tags = self::getRelationTags([$needle => ['id' => $data['id']]])[$needle]['tags'];
+        $post->author = self::getRelationUser([$needle => ['user_id' => $data['user_id']]])[$needle]['author'];
+
+        return $post;
+    }
+
+    /**
      * @return bool
      */
     public function save(): bool
@@ -64,11 +94,52 @@ class Post
     }
 
     /**
+     * @return bool
+     */
+    public function destroy()
+    {
+        $db = DB::getConection();
+
+        $db->query("DELETE FROM posts_tags WHERE post_id = $this->id");
+        unlink(APP_ROOT . '/public' . $this->image_path);
+        $deleted = $db->query("DELETE FROM posts WHERE id = $this->id");
+
+        return (bool) $deleted;
+    }
+
+    /**
      * Get all post authenticated user
      *
      * @return array|null
      */
-    public static function getOwn(): ?array
+    public static function getAll()
+    {
+        $db = DB::getConection();
+
+        $queryPosts = $db->query("SELECT * FROM posts");
+        $postsData = $queryPosts->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($postsData)) {
+            return null;
+        }
+
+        $posts = [];
+        foreach ($postsData as $post) {
+            $posts[$post['id']] = $post;
+        }
+
+        $posts = self::getRelationUser($posts);
+        $posts = self::getRelationTags($posts);
+
+        return $posts;
+    }
+
+    /**
+     * Get all post authenticated user
+     *
+     * @return array|null
+     */
+    public static function getOwn()
     {
         $db = DB::getConection();
 
@@ -145,7 +216,7 @@ class Post
         }
 
         foreach ($posts as &$post) {
-            $post['user'] = $users[$post['user_id']];
+            $post['author'] = $users[$post['user_id']];
         }
 
         return $posts;

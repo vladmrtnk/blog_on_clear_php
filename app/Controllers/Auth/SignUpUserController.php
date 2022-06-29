@@ -35,7 +35,8 @@ class SignUpUserController extends BaseController
             }
 
             if (!$validated['email']) {
-                Flash::createMessage(INVALID_EMAIL, 'Enter the correct email', FLASH_ERROR);
+                Flash::createMessage(INVALID_EMAIL, 'Enter the correct email. Or this email already exist',
+                    FLASH_ERROR);
             }
 
             if (!$validated['password']) {
@@ -49,7 +50,7 @@ class SignUpUserController extends BaseController
         $user = new User($validated);
         if ($user->save()) {
             $_SESSION[AUTHENTICATED_USER] = $user->id;
-            header('Location: /dashboard');
+            header('Location: /dashboard/posts');
         }
     }
 }

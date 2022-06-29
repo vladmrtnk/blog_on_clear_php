@@ -19,5 +19,7 @@ const INVALID_POST_TITLE = 'invalid_post_title';
 const INVALID_POST_CONTENT = 'invalid_post_content';
 const INVALID_POST_IMAGE = 'invalid_post_image';
 
+const INVALID_TAG_TITLE = 'invalid_tag_title';
+
 /* Old data from Form */
 const OLD_FORM_DATA = 'OLD_FORM_DATA';

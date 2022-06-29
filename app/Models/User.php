@@ -64,6 +64,21 @@ class User
     }
 
     /**
+     * @param  string  $user
+     *
+     * @return bool
+     */
+    public static function exist(string $user): bool
+    {
+        $db = DB::getConection();
+
+        $query = $db->query("SELECT id FROM users WHERE email = '$user'");
+        $userIsset = (bool) $query->fetch(PDO::FETCH_ASSOC);
+
+        return $userIsset;
+    }
+
+    /**
      * @return bool
      */
     public function save(): bool
@@ -74,6 +89,7 @@ class User
         $created_at = (new DateTime())->format(DATE_ATOM);
 
         $query = $db->query("INSERT INTO users (name, email, password, created_at, updated_at) VALUES ('$this->name', '$this->email', '$hash', '$created_at', '$created_at')");
+        $this->id = $db->lastInsertId('users');
 
         return (bool) $query;
     }

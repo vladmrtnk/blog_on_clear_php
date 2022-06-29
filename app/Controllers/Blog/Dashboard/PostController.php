@@ -79,32 +79,12 @@ class PostController extends BaseController
     /**
      * @return void
      */
-    public function show()
+    public function destroy(int $id)
     {
+        $post = Post::find($id);
 
-    }
-
-    /**
-     * @return void
-     */
-    public function edit()
-    {
-
-    }
-
-    /**
-     * @return void
-     */
-    public function update()
-    {
-
-    }
-
-    /**
-     * @return void
-     */
-    public function destroy()
-    {
-
+        if ($post->destroy()){
+            header('Location: /dashboard/posts');
+        }
     }
 }
